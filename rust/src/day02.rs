@@ -7,7 +7,7 @@ pub fn solve() {
 }
 
 fn solve_internal(test_name: &str) -> (u128, u128) {
-    let (mut res0, res1) = (0, 0);
+    let (mut res0, mut res1) = (0, 0);
     fs::read_to_string(format!("../data/day02/{}.txt", test_name))
         .expect("cannot read input file")
         .split(",")
@@ -22,6 +22,16 @@ fn solve_internal(test_name: &str) -> (u128, u128) {
                 let il = is.len();
                 if il % 2 == 0 && is.as_bytes()[..il / 2] == is.as_bytes()[il / 2..] {
                     res0 += i;
+                }
+                'outer: for j in 1..=il / 2 {
+                    let sub = is.as_bytes()[..j].to_vec();
+                    for k in (0..il).step_by(j) {
+                        if k + j > il || is.as_bytes()[k..k + j].to_vec() != sub {
+                            continue 'outer;
+                        }
+                    }
+                    res1 += i;
+                    break 'outer;
                 }
             }
         });
@@ -43,6 +53,6 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        assert_eq!(solve_internal("test0").1, 0);
+        assert_eq!(solve_internal("test0").1, 4_174_379_265);
     }
 }
