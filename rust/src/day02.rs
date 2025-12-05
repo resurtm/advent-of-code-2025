@@ -15,8 +15,8 @@ fn solve_internal(test_name: &str) -> (u128, u128) {
         .filter(|x| !x.is_empty())
         .for_each(|x| {
             let parts: Vec<&str> = x.split("-").collect();
-            let begin: u128 = parts[0].parse().expect("i32 expected begin");
-            let end: u128 = parts[1].parse().expect("i32 expected end");
+            let begin: u128 = parts[0].parse().expect("u128 expected begin");
+            let end: u128 = parts[1].parse().expect("u128 expected end");
             for i in begin..=end {
                 let is = i.to_string();
                 let il = is.len();
@@ -37,8 +37,8 @@ fn solve_internal(test_name: &str) -> (u128, u128) {
         });
     println!("--- --- --- --- ---");
     println!("Test name: {}", test_name);
-    println!("Day 01, part 1: {}", res0);
-    println!("Day 01, part 2: {}", res1);
+    println!("Day 02, part 1: {}", res0);
+    println!("Day 02, part 2: {}", res1);
     (res0, res1)
 }
 
