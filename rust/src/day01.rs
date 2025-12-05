@@ -49,6 +49,7 @@ fn solve_internal(test_name: &str) -> (i32, i32) {
             }
             acc
         });
+    println!("--- --- --- --- ---");
     println!("Test name: {}", test_name);
     println!("Day 01, part 1: {}", res0);
     println!("Day 01, part 2: {}", res1);
