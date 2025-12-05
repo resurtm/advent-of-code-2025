@@ -29,10 +29,7 @@ fn solve_internal(test_name: &str) -> (u128, u128) {
             }
             res0 += max;
             // part 2
-            let mut accum = vec![];
-            let mut max = 0;
-            check_joltage(0, 0, &mut accum, &mut max, &chars);
-            res1 += max;
+            res1 += check_joltage(&chars);
         });
     println!("--- --- --- --- ---");
     println!("Test name: {}", test_name);
@@ -41,30 +38,27 @@ fn solve_internal(test_name: &str) -> (u128, u128) {
     (res0, res1)
 }
 
-fn check_joltage(
-    pos: usize,
-    level: usize,
-    accum: &mut Vec<char>,
-    max: &mut u128,
-    chars: &Vec<char>,
-) {
-    if level == 12 {
-        let val = accum
-            .iter()
-            .collect::<String>()
-            .parse::<u128>()
-            .expect("accum u128 expected");
-        if *max < val {
-            *max = val;
+fn check_joltage(chars: &[char]) -> u128 {
+    const K: usize = 12;
+    let mut res = String::with_capacity(K);
+    let mut pos = 0usize;
+
+    for taken in 0..K {
+        let mut idx = pos;
+        let mut ch = chars[pos];
+
+        for i in pos..=chars.len() - (K - taken) {
+            if chars[i] > ch {
+                ch = chars[i];
+                idx = i;
+            }
         }
-        return;
+
+        res.push(ch);
+        pos = idx + 1;
     }
-    let begin = if level == 0 { 0 } else { pos + 1 };
-    for i in begin..chars.len() {
-        accum.push(chars[i]);
-        check_joltage(i, level + 1, accum, max, chars);
-        accum.pop();
-    }
+
+    res.parse::<u128>().expect("u128 expected")
 }
 
 #[cfg(test)]
