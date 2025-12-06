@@ -17,8 +17,18 @@ fn solve_internal(test_name: &str) -> (i32, i32) {
             acc.push(x);
             acc
         });
+    let res0 = solve_internal_part1(&grid);
+    let res1 = 0;
+    println!("--- --- --- --- ---");
+    println!("Test name: {}", test_name);
+    println!("Day 04, part 1: {}", res0);
+    println!("Day 04, part 2: {}", res1);
+    (res0, res1)
+}
+
+fn solve_internal_part1(grid: &[Vec<bool>]) -> i32 {
     let (w, h) = (grid[0].len(), grid.len());
-    let (mut res0, res1) = (0, 0);
+    let mut res = 0;
     for j in 0..h as i32 {
         for i in 0..w as i32 {
             if !grid[j as usize][i as usize] {
@@ -44,15 +54,11 @@ fn solve_internal(test_name: &str) -> (i32, i32) {
                 }
             }) < 4
             {
-                res0 += 1;
+                res += 1;
             }
         }
     }
-    println!("--- --- --- --- ---");
-    println!("Test name: {}", test_name);
-    println!("Day 04, part 1: {}", res0);
-    println!("Day 04, part 2: {}", res1);
-    (res0, res1)
+    res
 }
 
 #[cfg(test)]
