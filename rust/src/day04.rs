@@ -7,7 +7,7 @@ pub fn solve() {
 }
 
 fn solve_internal(test_name: &str) -> (i32, i32) {
-    let grid: Vec<Vec<bool>> = fs::read_to_string(format!("../data/day04/{}.txt", test_name))
+    let mut grid: Vec<Vec<bool>> = fs::read_to_string(format!("../data/day04/{}.txt", test_name))
         .expect("cannot read input file")
         .split("\n")
         .map(|x| x.trim())
@@ -18,7 +18,7 @@ fn solve_internal(test_name: &str) -> (i32, i32) {
             acc
         });
     let res0 = solve_internal_part1(&grid);
-    let res1 = 0;
+    let res1 = solve_internal_part2(&mut grid);
     println!("--- --- --- --- ---");
     println!("Test name: {}", test_name);
     println!("Day 04, part 1: {}", res0);
@@ -26,9 +26,9 @@ fn solve_internal(test_name: &str) -> (i32, i32) {
     (res0, res1)
 }
 
-fn solve_internal_part1(grid: &[Vec<bool>]) -> i32 {
+fn find_rolls(grid: &[Vec<bool>]) -> Vec<(usize, usize)> {
     let (w, h) = (grid[0].len(), grid.len());
-    let mut res = 0;
+    let mut res = vec![];
     for j in 0..h as i32 {
         for i in 0..w as i32 {
             if !grid[j as usize][i as usize] {
@@ -54,11 +54,30 @@ fn solve_internal_part1(grid: &[Vec<bool>]) -> i32 {
                 }
             }) < 4
             {
-                res += 1;
+                res.push((i as usize, j as usize));
             }
         }
     }
     res
+}
+
+fn solve_internal_part1(grid: &[Vec<bool>]) -> i32 {
+    find_rolls(grid).len() as i32
+}
+
+fn solve_internal_part2(grid: &mut [Vec<bool>]) -> i32 {
+    let mut res = 0;
+    loop {
+        let rolls = find_rolls(grid);
+        if rolls.is_empty() {
+            break;
+        }
+        res += rolls.len();
+        for &(i, j) in rolls.iter() {
+            grid[j][i] = false;
+        }
+    }
+    res as i32
 }
 
 #[cfg(test)]
@@ -72,6 +91,6 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        assert_eq!(solve_internal("test0").1, 0);
+        assert_eq!(solve_internal("test0").1, 43);
     }
 }
