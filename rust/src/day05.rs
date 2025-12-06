@@ -6,13 +6,13 @@ pub fn solve() {
     solve_internal("gh");
 }
 
-fn solve_internal(test_name: &str) -> (i32, i32) {
+fn solve_internal(test_name: &str) -> (u128, u128) {
     let parts: Vec<String> = fs::read_to_string(format!("../data/day05/{}.txt", test_name))
         .expect("cannot read input file")
         .split("\n\n")
         .map(String::from)
         .collect();
-    let fresh: Vec<(u128, u128)> = parts[0]
+    let mut fresh: Vec<(u128, u128)> = parts[0]
         .split("\n")
         .map(|x| x.trim())
         .filter(|x| !x.is_empty())
@@ -30,7 +30,7 @@ fn solve_internal(test_name: &str) -> (i32, i32) {
         .filter(|x| !x.is_empty())
         .map(|x| x.parse::<u128>().expect("u128 avail expected"))
         .collect();
-    let (mut res0, res1) = (0, 0);
+    let (mut res0, mut res1) = (0, 0);
     for &it in avail.iter() {
         for &(begin, end) in fresh.iter() {
             if begin <= it && it <= end {
@@ -38,6 +38,30 @@ fn solve_internal(test_name: &str) -> (i32, i32) {
                 break;
             }
         }
+    }
+    let mut i = 0;
+    'outer: while i < fresh.len() {
+        let mut j = 0;
+        while j < fresh.len() {
+            if i == j {
+                j += 1;
+                continue;
+            }
+            if fresh[i].0 >= fresh[j].0 && fresh[i].1 <= fresh[j].1 {
+                fresh.remove(i);
+                continue 'outer;
+            }
+            if fresh[i].0 <= fresh[j].0 && fresh[i].1 >= fresh[j].0 && fresh[i].1 <= fresh[j].1 {
+                fresh[j].0 = fresh[i].0;
+                fresh.remove(i);
+                continue 'outer;
+            }
+            j += 1;
+        }
+        i += 1;
+    }
+    for &(begin, end) in fresh.iter() {
+        res1 += end - begin + 1;
     }
     println!("--- --- --- --- ---");
     println!("Test name: {}", test_name);
@@ -57,6 +81,6 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        assert_eq!(solve_internal("test0").1, 0);
+        assert_eq!(solve_internal("test0").1, 14);
     }
 }
